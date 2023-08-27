@@ -38,11 +38,18 @@ export default function userHandlers(io, socket) {
         io.to(room).emit('user_list:update', roomsList[room])
       }
 
+
+
     socket.on('user:add', ({name, room})=>{
         addToRoomsList(name, room)
         addToUsersList(name, room)
         updateUserList(room)
+        socket.emit('user_room_list:update', usersList)
     })
+
+
+
+
 
     socket.on('user:disconnect', ({name, room})=>{
         deleteFromRoomsList(name, room)

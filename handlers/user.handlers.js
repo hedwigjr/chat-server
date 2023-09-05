@@ -31,7 +31,6 @@ export default function userHandlers(io, socket) {
     const deleteFromUsersList = (name, room) => {
       if (!usersList[name]) return
       usersList[name] = usersList[name].filter((word) => word != room)
-      console.log(usersList)
     }
 
     const updateUserList = (room) => {
@@ -40,20 +39,25 @@ export default function userHandlers(io, socket) {
 
 
 
-    socket.on('user:add', ({name, room})=>{
-        addToRoomsList(name, room)
-        addToUsersList(name, room)
+    socket.on('user:add', ({user, room})=>{
+        addToRoomsList(user, room)
+        addToUsersList(user, room)
         updateUserList(room)
         socket.emit('user_room_list:update', usersList)
     })
+    socket.on('users:get', ()=>{
+      socket.emit('user_room_list:update', usersList)
+      socket.emit('user_list:update',  roomsList)
+  })
 
 
 
 
 
-    socket.on('user:disconnect', ({name, room})=>{
-        deleteFromRoomsList(name, room)
-        deleteFromUsersList(name, room)
+
+    socket.on('user:disconnect', ({user, room})=>{
+        deleteFromRoomsList(user, room)
+        deleteFromUsersList(user, room)
         updateUserList(room)
     })
 }

@@ -17,8 +17,8 @@ export default function messageHandler(io, socket) {
         io.to(room).emit('messages_list:update', messages[room])
         }
 
-    socket.on('message:add', ({name, room, message})=>{
-        addToMessages(name, room, message)
+    socket.on('message:add', ({user, room, message})=>{
+        addToMessages(user, room, message)
         updateMessagesList(room)
         })
 

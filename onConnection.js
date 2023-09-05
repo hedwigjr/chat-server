@@ -4,7 +4,7 @@ import userHandlers from './handlers/user.handlers.js'
 
 export default function onConnection(io, socket) {
 
-    socket.on('join', ({name, room})=>{
+    socket.on('join', ({user, room})=>{
             socket.join(room)
     })
 

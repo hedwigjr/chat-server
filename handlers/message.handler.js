@@ -4,33 +4,27 @@ export let messages = {
 }
 
 export default function messageHandler(io, socket) {
-    const isRoomInMessages = (room) => {
-        if (!messages[room]) {messages[room] = []}
-    }
-
     const addToMessages = (name, room, message) => {
-        isRoomInMessages(room)
+        if (!messages[room]) {messages[room] = []}
         messages[room].push({user: name, message: message})
     }
+    const sendMessagesToClient = (room) => {
+        io.to(room).emit('messages:get', messages)
+    }
 
-    const updateMessagesList = (room) => {
-        io.to(room).emit('messages_list:update', messages[room])
-        }
-
-    socket.on('message:add', ({user, room, message})=>{
+    socket.on('messages:add', ({user, room, message})=>{
         addToMessages(user, room, message)
-        updateMessagesList(room)
+        sendMessagesToClient(room)
         })
 
-    socket.on('messages_list:get', ({name, room})=>{
-        isRoomInMessages(room)
-        updateMessagesList(room)
+    socket.on('messages:update', ()=>{
+        socket.emit('messages:get', messages)
     })
 
 }
 
-export function log_messages(room, name, message, io) {
+export function log_messages( user, room, message, io) {
     if (!messages[room]) { messages[room] = [] }
-    messages[room].push({user: name, message: message})
-    io.to(room).emit('messages_list:update', messages[room])
+    messages[room].push({user: user, message: message})
+    io.to(room).emit('messages:get', messages)
 }

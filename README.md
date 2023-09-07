@@ -1,1 +1,1 @@
-depoly: https://online-chat-rljn.onrender.com/
+deploy: https://online-chat-rljn.onrender.com/
